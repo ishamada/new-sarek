@@ -905,7 +905,7 @@ workflow SAREK {
     //Ammar zcat
     //vcf_files_channel = Channel
     //    .fromPath("${params.outdir}/annotation/**/*.vcf.gz")
-    zc_files =zcatFiles(VCF_ANNOTATE_ALL.out.vcf_ann.map { list -> list[1]})
+    zc_files =zcatFiles(VCF_ANNOTATE_ALL.out.vcf_ann.map { list -> list[1]}.collect())
 
 
     //
