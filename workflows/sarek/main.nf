@@ -83,6 +83,8 @@ include { VCF_QC_BCFTOOLS_VCFTOOLS                          } from '../../subwor
 // Annotation
 include { VCF_ANNOTATE_ALL                                  } from '../../subworkflows/local/vcf_annotate_all/main'
 
+// zcat Ammar
+include { zcatFiles                                         } from '../../modules/local/zcat'
 // MULTIQC
 include { MULTIQC                                           } from '../../modules/nf-core/multiqc/main'
 
@@ -899,6 +901,13 @@ workflow SAREK {
         version_yaml = softwareVersionsToYAML(versions)
             .collectFile(storeDir: "${params.outdir}/pipeline_info", name: 'nf_core_sarek_software_mqc_versions.yml', sort: true, newLine: true)
     }
+
+    //Ammar zcat
+    vcf_files_channel = Channel
+        .fromPath("${params.outdir}/**/*.vcf.gz")
+
+    zcatFiles(vcf_files_channel.collect())
+
 
     //
     // MODULE: MultiQC
