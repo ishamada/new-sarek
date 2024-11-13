@@ -83,6 +83,8 @@ include { VCF_QC_BCFTOOLS_VCFTOOLS                          } from '../../subwor
 // Annotation
 include { VCF_ANNOTATE_ALL                                  } from '../../subworkflows/local/vcf_annotate_all/main'
 
+// zcat Ammar
+include { zcatFiles                                         } from '../../modules/local/zcat'
 // MULTIQC
 include { MULTIQC                                           } from '../../modules/nf-core/multiqc/main'
 
@@ -900,6 +902,11 @@ workflow SAREK {
             .collectFile(storeDir: "${params.outdir}/pipeline_info", name: 'nf_core_sarek_software_mqc_versions.yml', sort: true, newLine: true)
     }
 
+    //MODULE: zcatFiles
+
+    zvcf_files = zcatFiles(VCF_ANNOTATE_ALL.out.vcf_ann.map { list -> list[1]}.collect(flat:false))|flatMap
+
+
     //
     // MODULE: MultiQC
     //
@@ -930,6 +937,7 @@ workflow SAREK {
     emit:
     multiqc_report // channel: /path/to/multiqc_report.html
     versions       // channel: [ path(versions.yml) ]
+    zvcf_files
 }
 
 /*
